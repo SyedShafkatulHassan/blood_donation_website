@@ -14,27 +14,38 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['blood_type'])) {
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
+<style>
+
+</style>
+
 <body>
-    <div class="container" style="margin-top: 5%;">
+    <div class="container" style="margin-top: 5%; font-size :10px">
         <h3 class="text-center">Donners Information</h3>
         <form class="form-inline justify-content-center mb-3">
             <div class="form-group">
-                <label for="bloodTypeSearch">Search by Blood Type:</label>
-                <input type="text" class="form-control mx-sm-2" id="bloodTypeSearch" name="blood_type" placeholder="Blood Type" >
-                <button type="submit" class="btn btn-danger">Search</button>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="bloodTypeSearch" name="blood_type" placeholder="Search by Blood Type">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-danger button">Search</button>
+                    </div>
+                </div>
             </div>
         </form>
-        <div class="table-responsive" style="font-family: 'Poppins', sans-serif; font-size: larger;">
+
+        <div class="table-responsive col-sm-12" style="font-family: 'Poppins', sans-serif;font-size:17px">
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>User Name</th>
-                        <th>Blood Type</th>
+                        <th>UserName</th>
+                        <th>BloodType</th>
                         <th>Location</th>
-                        <th>Last Donated</th>
+                        <th>LastDonated</th>
+                        <th>Phonenumber</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,6 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['blood_type'])) {
                         echo "<td>" . $row['Blood_Type'] . "</td>";
                         echo "<td>" . $row['Location'] . "</td>";
                         echo "<td>" . $row['LastDonated'] . "</td>";
+                        echo "<td>" . $row['Phonenumber'] . "</td>";
                         echo "</tr>";
                     }
                     ?>
@@ -54,6 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['blood_type'])) {
         </div>
     </div>
 </body>
+
 </html>
 
 <?php

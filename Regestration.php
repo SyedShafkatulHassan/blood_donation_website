@@ -7,18 +7,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $Blood_Type = $_POST['Blood_Type'];
     $Location = $_POST['Location'];
     $LastDonated = $_POST['LastDonated'];
+    $Phonenumber= $_POST['Phonenumber'];
 
-    if (!empty($Blood_Type) && !empty($name) && !empty($password) && !empty($Location) && !empty($LastDonated)) {
+    if (!empty($Blood_Type) && !empty($name) && !empty($password) && !empty($Location) && !empty($LastDonated) && !empty($Phonenumber)) {
         $urPattern = '/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{3,}$/';
         $pasPattern = '/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=<>?]).{8,}$/';
         $datePattern = '/^\d{2}-\d{2}-\d{4}$/';
         $bloodTypePattern = '/^(A|B|AB|O)[+-]$/';
+        $ph = '/(^(\+88|0088)?(01){1}[3456789]{1}(\d){8})$/';
 
-        if (preg_match($urPattern, $name) && preg_match($pasPattern, $password) && preg_match($datePattern, $LastDonated) && preg_match($bloodTypePattern, $Blood_Type)) {
+        if (preg_match($urPattern, $name) && preg_match($pasPattern, $password) && preg_match($datePattern, $LastDonated) && preg_match($bloodTypePattern, $Blood_Type) && preg_match($ph, $Phonenumber)) {
             if ($conn) {
                 $DuplicateUser = mysqli_query($conn, "SELECT * FROM alluserinformation WHERE name ='$name'");
                 if (mysqli_num_rows($DuplicateUser) == 0) {
-                    $sql = "INSERT INTO alluserinformation (name, password, Blood_Type, Location, LastDonated) VALUES ('$name', '$password', '$Blood_Type', '$Location', '$LastDonated')";
+                    $sql = "INSERT INTO alluserinformation (name, password, Blood_Type, Location, LastDonated,Phonenumber) VALUES ('$name', '$password', '$Blood_Type', '$Location', '$LastDonated','$Phonenumber')";
                     mysqli_query($conn, $sql);
                     mysqli_close($conn);
                     header("Location: test.php");
@@ -27,10 +29,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             }
         } else {
-            echo "Invalid input format";
+            // echo "Invalid input format";
         }
     } else {
-        echo "Fill up all the fields";
+        // echo "Fill up all the fields";
     }
 }
 ?>
@@ -42,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <body>
     <div class="container" style="margin-top: 5%;">
         <div class="row justify-content-center"style="font-family: 'Poppins', sans-serif; color:red">
@@ -51,11 +53,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <form method="POST" onsubmit="return validForm()" autocomplete="off">
                     <div class="form-group">
                         <label for="name">User Name:</label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Atleast 1 uppercaseletter ,smallcaseletter and number" required>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Atleast 1 number,1 capital and small letter" required>
                     </div>
                     <div class="form-group">
                         <label for="password">Password:</label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Atleast 1 uppercaseletter ,smallcaseletter,number,Sl and 8 length"required>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Atleast 1 number ,1 special , capital and small letter and length 8"required>
                     </div>
                     <div class="form-group">
                         <label for="Blood Type">Blood Type:</label>
@@ -69,6 +71,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <label for="LastDonated">LastDonated:</label>
                         <input type="text" class="form-control" id="LastDonated" name="LastDonated" placeholder="Example: 02-12-2024" required>
                     </div>
+                    <div class="form-group">
+                        <label for="Phonenumber">Phonenumber</label>
+                        <input type="text" class="form-control" id="Phonenumber" name="Phonenumber" placeholder="Example: 01737091061" required>
+                    </div>
                     <button type="submit" class="btn btn-danger">Submit</button>
                 </form>
             </div>
@@ -81,10 +87,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             var CheckBloodType= document.forms[0].Blood_Type.value;
             var CheckLocation= document.forms[0].Location.value;
             var CheckLastDonated= document.forms[0].LastDonated.value;
+            var checkphone=document.forms[0].Phonenumber.value;
             const ur = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{3,}$/;
             const pas = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=<>?]).{8,}$/;
             const date = /^\d{2}-\d{2}-\d{4}$/;
             const bloodtype = /^(A|B|AB|O)[+-]$/;
+            const ph = /(^(\+88|0088)?(01){1}[3456789]{1}(\d){8})$/;
             if (!ur.test(CheckName)) {
                 alert("User name need to have Atleast 1 uppercaseletter ,smallcaseletter and number");
                 return false;
@@ -101,7 +109,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 alert("Blood type is not correct!");
                 return false;
             }
-
+            if (! ph.test(checkphone)) {
+                alert("Phone Number is not correct!");
+                return false;
+            }
         }
     </script>
 </body>

@@ -7,18 +7,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST['name'];
     $password = $_POST['password'];
     if (preg_match($nameRegex, $name) && preg_match($passwordRegex, $password)) {
-        if (mysqli_query($conn, "SELECT * FROM alluserinformation WHERE name ='$name' AND password = '$password'")) {
+        $result = mysqli_query($conn, "SELECT * FROM alluserinformation WHERE name ='$name' and password = '$password'");
+        if (mysqli_num_rows($result) > 0) {
             session_start();
             $_SESSION['username'] = $name;
             $_SESSION['password'] = $password;
             header("Location: login.php");
-        }
+        } else {
+            echo '<script>alert("You are not a registered user!");</script>';
+        }        
     }
 }
 
 ?>
 <!DOCTYPE html>
 <html>
+
+</style>
 
 <head>
     <title>Home Page</title>
@@ -27,7 +32,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        .last {
+            font-size: 20px;
+        }
+
+        @media (max-width: 576px) {
+            .last {
+                font-size: 15px;
+            }
+        }
+
         .carousel-item img {
             height: 400px;
             width: 800px;
@@ -55,12 +71,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
+
         }
 
         .close {
             color: #aaa;
             float: right;
-            font-size: 28px;
+            font-size: 40px;
             font-weight: bold;
             cursor: pointer;
         }
@@ -86,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#" id="donors list" style="color: red;">See donors list</a>
+                        <a class="nav-link" href="#" id="donors list" style="color: red;">Donors list</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#" id="Registration" style="color: red;">Registration</a>
@@ -133,37 +150,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <span class="close">&times;</span>
             <h2 style="color: red;">Login</h2>
             <form id="loginForm" method="post">
-                <div class="mb-3" style="color: red;">
-                    <label for="name" class="form-label">Name:</label>
-                    <input type="text" class="form-control" id="name" name="name" required>
+                <div class="mb-3">
+                    <label for="name" class="form-label" style="color: red;">Name:</label>
+                    <input type="text" class="form-control form-control-lg" id="name" name="name" required>
                 </div>
-                <div class="mb-3" style="color: red;">
-                    <label for="password" class="form-label">Password:</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
+                <div class="mb-3">
+                    <label for="password" class="form-label" style="color: red;">Password:</label>
+                    <input type="password" class="form-control form-control-lg" id="password" name="password" required>
                 </div>
                 <button type="submit" class="btn btn-danger">Submit</button>
             </form>
         </div>
     </div>
-    <div class="container-fluid col-lg-5 col-sm-10 mt-5" style="color: red;font-family: 'Poppins', sans-serif; font-size: larger;">
-        1. Saves lives during emergencies and accidents.
-        <br>
-        2.Supports patients undergoing surgeries and medical treatments.
-        <br>
-        3.Provides essential blood transfusions for individuals with blood disorders. <br>
-        4.Helps cancer patients during chemotherapy and radiation therapy. <br>
-        5.Assists individuals with anemia or other blood-related conditions. <br>
-        6.Supplies blood for childbirth and pregnancy complications. <br>
-        7.Supports patients with severe injuries or trauma. <br>
-        8.Treats patients with chronic illnesses requiring regular transfusions. <br>
-        9.Ensures a sufficient blood supply for medical emergencies. <br>
-        10.Improves the overall healthcare system's efficiency and preparedness. <br>
-        11.Promotes community solidarity and compassion. <br>
-        12.Raises awareness about the importance of blood donation. <br>
-        13.Offers a chance for donors to have a health check-up. <br>
-        14.Provides a rewarding experience of directly helping others. <br>
-        Builds a strong sense of altruism and empathy in society. <br><br><br>
+
+    <div class="last">
+        <div class="container-fluid col-lg-5 col-sm-10 mt-5" style="color:green;font-family: 'Poppins', sans-serif;">
+            1. Saves lives during emergencies and accidents.
+            <br>
+            2. Supports patients undergoing surgeries and medical treatments.
+            <br>
+            3. Provides essential blood transfusions for individuals with blood disorders. <br>
+            4. Helps cancer patients during chemotherapy and radiation therapy. <br>
+            5. Assists individuals with anemia or other blood-related conditions. <br>
+            6. Supplies blood for childbirth and pregnancy complications. <br>
+            7. Supports patients with severe injuries or trauma. <br>
+            8. Treats patients with chronic illnesses requiring regular transfusions. <br>
+            9. Ensures a sufficient blood supply for medical emergencies. <br>
+            10. Improves the overall healthcare system's efficiency and preparedness. <br>
+            11. Promotes community solidarity and compassion. <br>
+            12. Raises awareness about the importance of blood donation. <br>
+            13. Offers a chance for donors to have a health check-up. <br>
+            14. Provides a rewarding experience of directly helping others. <br>
+            15. Builds a strong sense of altruism and empathy in society. <br><br><br>
+
+        </div>
     </div>
+    </div>
+
 
     <script>
         document.getElementById("loginButton").addEventListener("click", function() {
@@ -184,9 +207,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             var password = document.getElementById("password").value;
             const Ur = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{3,}$/;
             const Pas = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=<>?]).{8,}$/;
-            if (Ur.test(name) && Pas.test(password)) {
-
-
+            if (!Ur.test(name) && !Pas.test(password)) {
+                alert("UserName doesn't match");
+                return false;
+            }
+            if (!Pas.test(password)) {
+                alert("Password doesn't match");
+                return false;
             }
         });
     </script>
